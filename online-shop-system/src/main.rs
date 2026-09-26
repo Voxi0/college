@@ -1,5 +1,6 @@
 #![allow(non_snake_case)]
 mod app;
+mod menu;
 use app::App;
 
 fn main() -> color_eyre::Result<()> {
