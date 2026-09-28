@@ -1,15 +1,20 @@
 #![allow(non_snake_case)]
+
+mod app_state;
 mod app;
-mod menu;
-mod menu_box;
+mod box;
 use app::App;
 
-pub const BORDER_COLOR: u32 = 0x2B385E;
-
 fn main() -> color_eyre::Result<()> {
+    // Install `color-eyre` panic/error handlers and whatnot
     color_eyre::install()?;
+
+    // Create the application
+    let mut app: App = App::new()
+        .title("Hello World");
+
     let mut terminal = ratatui::init();
-    let appResult = App::default().run(&mut terminal)?;
+    let appResult = app.run(&mut terminal);
     ratatui::restore();
-    return Ok(appResult);
+    return appResult;
 }
