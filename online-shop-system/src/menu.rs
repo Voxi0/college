@@ -1,9 +1,9 @@
 use crossterm::event::KeyCode;
 use ratatui::{
     Frame,
-    style::Style,
     layout::Rect,
-    widgets::{List, ListState, ListDirection},
+    style::Style,
+    widgets::{List, ListDirection, ListState},
 };
 
 #[derive(Default)]
@@ -59,16 +59,6 @@ impl Menu {
     }
 
     // Getters
-    pub fn getSize(&self) -> color_eyre::Result<(usize, usize)> {
-        let height = self.items.len();
-        let width = self.items
-            .iter()
-            .map(|s| s.len())
-            .max()
-            .unwrap_or(0);
-
-        return Ok((width, height));
-    }
     pub fn getChosenItem(&self) -> &str {
         return self.chosenItem.as_str();
     }
