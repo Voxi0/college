@@ -1,9 +1,15 @@
 #![allow(non_snake_case)]
 
+mod utils;
 mod app_state;
 mod app;
-mod box;
+mod container_box;
+mod menu;
 use app::App;
+
+// Constants
+pub const BORDER_COLOR: u32 = 0x22ffaa;
+pub const TEXT_COLOR: u32 = 0xffaa00;
 
 fn main() -> color_eyre::Result<()> {
     // Install `color-eyre` panic/error handlers and whatnot
