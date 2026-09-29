@@ -1,28 +1,75 @@
+use crossterm::event::KeyCode;
 use ratatui::{
     Frame,
-    style::{Style, Color},
+    style::Style,
     layout::Rect,
-    widgets::{List, ListState},
+    widgets::{List, ListState, ListDirection},
 };
 
+#[derive(Default)]
 pub struct Menu {
-    items: Option<Vec<String>>,
+    items: Vec<String>,
+    chosenItem: String,
     state: ListState,
+    highlightStyle: Style,
 }
 
 impl Menu {
     pub fn new() -> Self {
-        return Self {
-            items: None,
+        Self {
             state: ListState::default(),
-        };
+            highlightStyle: Style::default(),
+            ..Default::default()
+        }
     }
 
-    pub fn render(&mut self, frame: &mut Frame, area: &Rect) {
-        if let Some(items) = self.items.as_deref() {
-            let widget = List::new(items.iter().map(|s| s.as_str()))
-                .style(Style::default());
-            frame.render_stateful_widget(widget, frame.area(), &mut self.state);
+    pub fn render(&mut self, frame: &mut Frame, area: Rect) {
+        let widget = List::new(self.items.iter().map(|s| s.as_str()))
+            .direction(ListDirection::TopToBottom)
+            .highlight_symbol("> ")
+            .highlight_style(self.highlightStyle);
+        frame.render_stateful_widget(widget, area, &mut self.state);
+    }
+
+    pub fn handleKeyEvents(&mut self, keycode: KeyCode) {
+        match keycode {
+            KeyCode::Up | KeyCode::Char('k') => self.state.select_previous(),
+            KeyCode::Down | KeyCode::Char('j') => self.state.select_next(),
+            KeyCode::Enter => {
+                if let Some(index) = self.state.selected() {
+                    self.chosenItem = self.items[index].to_string();
+                }
+            },
+            _ => {},
         }
+    }
+
+    // Setters
+    pub fn items<T: Into<String>>(mut self, items: impl IntoIterator<Item = T>) -> Self {
+        let itemList: Vec<String> = items.into_iter().map(Into::into).collect();
+        if !itemList.is_empty() {
+            self.items = itemList;
+            self.state.select_first();
+        }
+        return self;
+    }
+    pub fn highlightStyle(mut self, style: Style) -> Self {
+        self.highlightStyle = style;
+        return self;
+    }
+
+    // Getters
+    pub fn getSize(&self) -> color_eyre::Result<(usize, usize)> {
+        let height = self.items.len();
+        let width = self.items
+            .iter()
+            .map(|s| s.len())
+            .max()
+            .unwrap_or(0);
+
+        return Ok((width, height));
+    }
+    pub fn getChosenItem(&self) -> &str {
+        return self.chosenItem.as_str();
     }
 }

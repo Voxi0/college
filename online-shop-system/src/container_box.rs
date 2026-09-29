@@ -8,6 +8,7 @@ use ratatui::{
     text::{Line},
 };
 
+#[derive(Default)]
 pub struct ContainerBox {
     title: Option<String>,
     width: u16,
@@ -26,16 +27,32 @@ impl ContainerBox {
     }
 
     pub fn render(&self, frame: &mut Frame, area: Rect) {
-        let widget = Block::bordered()
+        frame.render_widget(self.getWidget(), area);
+    }
+
+    // Setters
+    pub fn setSize(&mut self, width: u16, height: u16) {
+        self.width = width;
+        self.height = height;
+    }
+
+    // Getters
+    pub fn getSize(&self) -> (u16, u16) {
+        (self.width, self.height)
+    }
+    fn getWidget(&self) -> Block<'_> {
+        Block::bordered()
             .title(Line::from(self.title.as_deref().unwrap_or(" default title "))
                 .centered()
                 .style(Style::default().fg(Color::from_u32(TEXT_COLOR))))
             .border_style(self.borderStyle.unwrap_or(Style::default()))
-            .border_type(BorderType::Rounded);
-        frame.render_widget(widget, area);
+            .border_type(BorderType::Rounded)
+    }
+    pub fn getInnerArea(&self, area: Rect) -> Rect {
+        return self.getWidget().inner(area);
     }
 
-    // Setters
+    // Builder-lite
     pub fn title(mut self, title: &str) -> Self {
         self.title = Some(title.to_string());
         return self;
@@ -48,10 +65,5 @@ impl ContainerBox {
     pub fn borderStyle(mut self, style: Style) -> Self {
         self.borderStyle = Some(style);
         return self;
-    }
-
-    // Getters
-    pub fn getSize(&self) -> (u16, u16) {
-        (self.width, self.height)
     }
 }

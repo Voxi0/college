@@ -8,8 +8,10 @@ mod menu;
 use app::App;
 
 // Constants
-pub const BORDER_COLOR: u32 = 0x22ffaa;
+pub const BORDER_COLOR: u32 = 0x2B385E;
 pub const TEXT_COLOR: u32 = 0xffaa00;
+pub const HIGHLIGHT_BG_COLOR: u32 = 0x532326;
+pub const HIGHLIGHT_FG_COLOR: u32 = 0xffffff;
 
 fn main() -> color_eyre::Result<()> {
     // Install `color-eyre` panic/error handlers and whatnot
