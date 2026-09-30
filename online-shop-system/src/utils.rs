@@ -13,20 +13,19 @@ pub fn getCenterArea(frame: &Frame, rect: &Rect) -> Rect {
     return area;
 }
 
-pub fn splitItemAndPrice(itemAndPrice: &str) -> Option<(&str, f32)> {
-    // Split item and price using the dash as the separator
-    let (itemPart, pricePart) = itemAndPrice.rsplit_once('-')?;
+pub fn splitItemAndPrice(itemAndPrice: &str) -> (&str, f32) {
+    if let Some((itemPart, pricePart)) = itemAndPrice.rsplit_once('-') {
+        if let Ok(price) = pricePart.trim().trim_start_matches('£').trim().parse::<f32>() {
+            return (itemPart.trim(), price);
+        }
+    }
 
-    // Trim leading and trailing whitespaces and the currency symbol (£)
-    let price = pricePart.trim().trim_start_matches('£').trim().parse::<f32>().ok()?;
-
-    // Return a tuple of both item and price
-    return Some((itemPart.trim(), price));
+    return (itemAndPrice, 0.0);
 }
 #[test]
 fn testSplitItemAndPrice() {
-    assert_eq!(splitItemAndPrice("Keyboard - £15"), Some(("Keyboard", 15.0)));
-    assert_eq!(splitItemAndPrice(" Mouse-And-Keyboard   -  £     45"), Some(("Mouse-And-Keyboard", 45.0)));
-    assert_eq!(splitItemAndPrice(" Headset-£ 20"), Some(("Headset", 20.0)));
-    assert_eq!(splitItemAndPrice("Invalid Line"), None);
+    assert_eq!(splitItemAndPrice("Keyboard - £15"), ("Keyboard", 15.0));
+    assert_eq!(splitItemAndPrice(" Mouse-And-Keyboard   -  £     45"), ("Mouse-And-Keyboard", 45.0));
+    assert_eq!(splitItemAndPrice(" Headset-£ 20"), ("Headset", 20.0));
+    assert_eq!(splitItemAndPrice("Invalid Line"), ("Invalid Line", 0.0));
 }

@@ -115,7 +115,7 @@ impl App {
                     Line::from(
                         format!(
                             "{} x {} = {}",
-                            utils::splitItemAndPrice(self.productSelectionMenu.getChosenItem()).map_or("", |(item, _price)| item),
+                            utils::splitItemAndPrice(self.productSelectionMenu.getChosenItem()).0,
                             self.itemsQuantity,
                             self.itemsPrice
                         )
@@ -170,11 +170,10 @@ impl App {
                             KeyCode::Down | KeyCode::Char('j') => if self.itemsQuantity > 1 {self.itemsQuantity -= 1},
                             KeyCode::Backspace => self.itemsQuantity = 0,
                             KeyCode::Enter => {
-                                if let Some((_item, price)) = utils::splitItemAndPrice(self.productSelectionMenu.getChosenItem()) {
-                                    self.itemsPrice = price * self.itemsQuantity as f32;
-                                    if self.itemsPrice > 50.0 {
-                                        self.discountPrice = (price - (price * 0.1)) * self.itemsQuantity as f32;
-                                    }
+                                let (_item, price) = utils::splitItemAndPrice(self.productSelectionMenu.getChosenItem());
+                                self.itemsPrice = price * self.itemsQuantity as f32;
+                                if self.itemsPrice > 50.0 {
+                                    self.discountPrice = (price - (price * 0.1)) * self.itemsQuantity as f32;
                                 }
                             },
                             _ => {},
@@ -184,9 +183,8 @@ impl App {
                         self.deliveryMethodSelectionMenu.handleKeyEvents(key.code);
                         match key.code {
                             KeyCode::Enter => {
-                                if let Some((_item, price)) = utils::splitItemAndPrice(self.deliveryMethodSelectionMenu.getChosenItem()) {
-                                    self.deliveryPrice = price;
-                                }
+                                let (_item, price) = utils::splitItemAndPrice(self.deliveryMethodSelectionMenu.getChosenItem());
+                                self.deliveryPrice = price;
                             },
                             _ => {},
                         }
