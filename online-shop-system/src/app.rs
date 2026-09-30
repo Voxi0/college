@@ -213,7 +213,7 @@ impl App {
 
             // Go to next/previous state
             KeyCode::Enter => {
-                self.state.next();
+                if self.state != AppState::End {self.state.next();}
                 self.containerBox.setTitle(self.state.title());
             },
             KeyCode::Backspace => {
