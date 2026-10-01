@@ -1,14 +1,11 @@
-#![allow(non_snake_case)]
-use std::{io, io::Write};
+// Helper functions
+#[path = "../../utils.rs"]
+mod utils;
+use utils::{prompt, prompt_input};
+
+// Only need this for reading a single character without requiring user to press enter
+// Wish I could just stick to the standard library for something so simple but sadly no
 use console::Term;
-
-// Small helper function
-fn prompt(msg: &str) {
-    print!("{}", msg);
-
-    // Requires `std::io::Write` to be in scope
-    io::stdout().flush().unwrap();
-}
 
 // Main
 fn main() -> std::io::Result<()> {
@@ -16,13 +13,10 @@ fn main() -> std::io::Result<()> {
     let term = Term::stdout();
 
     // Get user age
-    let userAge: u8 = loop {
-        let mut userAgeStr: String = String::new();
-        prompt("Enter Your Age: ");
-        io::stdin()
-            .read_line(&mut userAgeStr)
-            .expect("[USER INPUT READLINE FAILURE]");
-        match userAgeStr.trim().parse() {
+    let user_age: u8 = loop {
+        let mut user_age_str: String = String::new();
+        prompt_input("Enter Your Age: ", &mut user_age_str);
+        match user_age_str.trim().parse() {
             Ok(num) => break num,
             Err(_) => {
                 println!("Invalid Number! Please Try Again");
@@ -32,9 +26,9 @@ fn main() -> std::io::Result<()> {
     };
 
     // Calculate ticket price
-    let ticketPrice: u8 = {
+    let ticket_price: u8 = {
         // Calculate ticket price based on age
-        let basePrice = match userAge {
+        let base_price = match user_age {
             // People under 16
             0..=15 => 6,
 
@@ -46,7 +40,7 @@ fn main() -> std::io::Result<()> {
         };
 
         // Add more money if the user wants popcorn
-        let popcornPrice = loop {
+        let popcorn_price = loop {
             prompt("Would you like some popcorn? (y/n): ");
             match term.read_char()? {
                 'y' | 'Y' => break 4,
@@ -59,11 +53,11 @@ fn main() -> std::io::Result<()> {
         };
 
         // Return total price
-        basePrice + popcornPrice
+        base_price + popcorn_price
     };
     
 
     // Display total price and terminate program
-    println!("\nTotal Price = {ticketPrice}");
+    println!("\nTotal Price = {ticket_price}");
     return Ok(());
 }

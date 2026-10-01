@@ -1,4 +1,7 @@
-use crate::utils::prompt;
+#[path = "../../utils.rs"]
+mod utils;
+use utils::prompt_input;
+
 use chrono::{DateTime, Datelike, Utc};
 
 #[derive(Default)]
@@ -16,12 +19,12 @@ impl User {
         let mut user: Self = Self::default();
 
         // Ask for user's name
-        prompt("Enter Your Name: ", &mut user.name)?;
+        prompt_input("Enter Your Name: ", &mut user.name);
 
         // User age - We have to parse the string to a u8
         let mut user_age: String = String::new();
         user.age = loop {
-            prompt("Enter Your Age: ", &mut user_age)?;
+            prompt_input("Enter Your Age: ", &mut user_age);
             match user_age.trim().parse::<i8>() {
                 Ok(age) => break age,
                 Err(_) => {
@@ -33,9 +36,9 @@ impl User {
         };
 
         // Ask user for their other details
-        prompt("Enter Your Hometown: ", &mut user.hometown)?;
-        prompt("Enter Your Favourite Tech: ", &mut user.fav_tech)?;
-        prompt("What's Your Intended Career? ", &mut user.intended_career)?;
+        prompt_input("Enter Your Hometown: ", &mut user.hometown);
+        prompt_input("Enter Your Favourite Tech: ", &mut user.fav_tech);
+        prompt_input("What's Your Intended Career? ", &mut user.intended_career);
 
         return Ok(user);
     }

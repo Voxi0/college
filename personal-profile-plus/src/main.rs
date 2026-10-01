@@ -1,4 +1,3 @@
-mod utils;
 mod user;
 use user::User;
 

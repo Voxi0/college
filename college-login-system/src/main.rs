@@ -1,5 +1,7 @@
-#![allow(non_snake_case)]
-use std::io::{self, Write};
+#[path = "../../utils.rs"]
+mod utils;
+use utils::prompt_input;
+
 use color_eyre::eyre::{self, WrapErr};
 use serde::Deserialize;
 
@@ -12,22 +14,6 @@ struct StudentRecord {
     password: String,
 }
 
-// Display a simple prompt
-fn prompt(string: &str) -> eyre::Result<()> {
-    print!("{string}");
-
-    // Not doing this causes the `print!` to show it's message only after user input for some reason
-    io::stdout().flush()?;
-    return Ok(());
-}
-
-// Reads a line of input, trims the newline from the end and returns it
-fn readLine() -> eyre::Result<String> {
-    let mut string: String = String::new();
-    io::stdin().read_line(&mut string)?;
-    return Ok(string.trim().to_string());
-}
-
 fn main() -> eyre::Result<()>{
     // Install `color-eyre` panic/errors handlers
     color_eyre::install()?;
@@ -36,44 +22,46 @@ fn main() -> eyre::Result<()>{
     let mut database = csv::Reader::from_path("db.csv")
         .wrap_err("Failed to open `db.csv` as it doesn't exist")?;
     database.headers().wrap_err("Failed to read headers from `db.csv`")?; // Skip the headers before recording the start position
-    let databaseStartPos = database.position().clone();
+    let db_start_pos = database.position().clone();
 
     // Main loop
     let mut verified: bool = false;
-    let mut numOfTries: u8 = 0;
-    while !verified && numOfTries < 3 {
-        numOfTries += 1;
+    let mut num_tries: u8 = 0;
+    while !verified && num_tries < 3 {
+        num_tries += 1;
 
         // Get student username and password
-        println!("");
-        prompt("Enter Your Username: ")?;
-        let username: String = readLine()?;
-        prompt("Enter Your Password: ")?;
-        let password: String = readLine()?;
+        let mut username: String = String::new();
+        let mut password: String = String::new();
+        prompt_input("Enter Your Username: ", &mut username);
+        prompt_input("Enter Your Password: ", &mut password);
 
         // Read the college's student database to check username and password
-        let mut userFound: bool = false;
+        let mut user_found: bool = false;
         for result in database.deserialize() {
             let record: StudentRecord = result.wrap_err("Failed to parse row from `db.csv`")?;
 
             // Check if user exists before checking the password
-            userFound = (record.username == username);
-            if !userFound continue;
-            verified = (record.password == password) && userFound;
+            user_found = record.username == username;
+            if !user_found {continue}
+            verified = (record.password == password) && user_found;
 
             // User is found so we exit the loop early
             break;
         }
 
         // User not found or incorrect password
-        if !userFound {
+        if !user_found {
             println!("Invalid Username");
         } else if !verified {
             println!("Invalid Password");
         }
 
         // Read the database from the beginning again
-        database.seek(databaseStartPos.clone())?;
+        database.seek(db_start_pos.clone())?;
+
+        // Newline before retrying just because
+        println!("");
     }
 
     // Check if user is verified finally
