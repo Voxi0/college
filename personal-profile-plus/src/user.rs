@@ -1,9 +1,10 @@
 use crate::utils::prompt;
+use chrono::{DateTime, Datelike, Utc};
 
 #[derive(Default)]
 pub struct User {
     name: String,
-    age: u8,
+    age: i8,
     hometown: String,
     fav_tech: String,
     intended_career: String,
@@ -21,7 +22,7 @@ impl User {
         let mut user_age: String = String::new();
         user.age = loop {
             prompt("Enter Your Age: ", &mut user_age)?;
-            match user_age.trim().parse::<u8>() {
+            match user_age.trim().parse::<i8>() {
                 Ok(age) => break age,
                 Err(_) => {
                     println!("Invalid age! Please enter a number 0-255");
@@ -41,10 +42,18 @@ impl User {
 
     // Display user information nicely
     pub fn show(&self) {
+        println!("[{}'S PROFILE]", self.name.to_uppercase());
         println!("User: {}", self.name);
         println!("Age: {}", self.age);
         println!("Hometown: {}", self.hometown);
         println!("Favourite Tech: {}", self.fav_tech);
         println!("Intended Career: {}", self.intended_career);
+
+        // Age in 5 years, 10 years, and number of years before the user is 30
+        let now: DateTime<Utc> = Utc::now();
+        let years_before_30: i32 = 30 - self.age as i32;
+        println!("Age in 5 Years: {}", self.age + 5);
+        println!("Age in 10 years: {}", self.age + 10);
+        println!("Will Turn 30 by The Year: {}", now.year() + years_before_30);
     }
 }
