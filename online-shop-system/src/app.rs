@@ -104,7 +104,7 @@ impl App {
             },
 
             AppState::Receipt => {
-                self.totalPrice = self.itemsPrice + self.discountPrice + self.deliveryPrice;
+                self.totalPrice = self.itemsPrice - self.discountPrice + self.deliveryPrice;
                 let text = Text::from(vec![
                     // Customer name
                     Line::from("Customer's Name").centered().bold(),
@@ -173,7 +173,7 @@ impl App {
                                 let (_item, price) = utils::splitItemAndPrice(self.productSelectionMenu.getChosenItem());
                                 self.itemsPrice = price * self.itemsQuantity as f32;
                                 if self.itemsPrice > 50.0 {
-                                    self.discountPrice = (price - (price * 0.1)) * self.itemsQuantity as f32;
+                                    self.discountPrice = (price * self.itemsQuantity as f32) * 0.1;
                                 }
                             },
                             _ => {},
