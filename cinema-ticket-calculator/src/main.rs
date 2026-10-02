@@ -1,7 +1,7 @@
 // Helper functions
 #[path = "../../utils.rs"]
 mod utils;
-use utils::{prompt, prompt_input};
+use utils::{prompt, prompt_num};
 
 // Only need this for reading a single character without requiring user to press enter
 // Wish I could just stick to the standard library for something so simple but sadly no
@@ -13,17 +13,7 @@ fn main() -> std::io::Result<()> {
     let term = Term::stdout();
 
     // Get user age
-    let user_age: u8 = loop {
-        let mut user_age_str: String = String::new();
-        prompt_input("Enter Your Age: ", &mut user_age_str);
-        match user_age_str.trim().parse() {
-            Ok(num) => break num,
-            Err(_) => {
-                println!("Invalid Number! Please Try Again");
-                continue;
-            },
-        };
-    };
+    let user_age: u8 = prompt_num("Enter Your Age: ");
 
     // Calculate ticket price
     let ticket_price: u8 = {
@@ -42,9 +32,9 @@ fn main() -> std::io::Result<()> {
         // Add more money if the user wants popcorn
         let popcorn_price = loop {
             prompt("Would you like some popcorn? (y/n): ");
-            match term.read_char()? {
-                'y' | 'Y' => break 4,
-                'n' | 'N' => break 0,
+            match term.read_char()?.to_ascii_lowercase() {
+                'y' => break 4,
+                'n' => break 0,
                 _ => {
                     println!("\nInvalid Input!");
                     continue;

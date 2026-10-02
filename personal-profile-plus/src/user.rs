@@ -1,6 +1,6 @@
 #[path = "../../utils.rs"]
 mod utils;
-use utils::prompt_input;
+use utils::{prompt_str, prompt_num};
 
 use chrono::{DateTime, Datelike, Utc};
 
@@ -19,26 +19,15 @@ impl User {
         let mut user: Self = Self::default();
 
         // Ask for user's name
-        prompt_input("Enter Your Name: ", &mut user.name);
+        prompt_str("Enter Your Name: ", &mut user.name);
 
         // User age - We have to parse the string to a u8
-        let mut user_age: String = String::new();
-        user.age = loop {
-            prompt_input("Enter Your Age: ", &mut user_age);
-            match user_age.trim().parse::<i8>() {
-                Ok(age) => break age,
-                Err(_) => {
-                    println!("Invalid age! Please enter a number 0-255");
-                    user_age.clear();
-                    continue;
-                },
-            }
-        };
+        user.age = prompt_num("Enter Your Age: ");
 
         // Ask user for their other details
-        prompt_input("Enter Your Hometown: ", &mut user.hometown);
-        prompt_input("Enter Your Favourite Tech: ", &mut user.fav_tech);
-        prompt_input("What's Your Intended Career? ", &mut user.intended_career);
+        prompt_str("Enter Your Hometown: ", &mut user.hometown);
+        prompt_str("Enter Your Favourite Tech: ", &mut user.fav_tech);
+        prompt_str("What's Your Intended Career? ", &mut user.intended_career);
 
         return Ok(user);
     }

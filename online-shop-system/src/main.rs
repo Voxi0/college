@@ -21,8 +21,11 @@ fn main() -> color_eyre::Result<()> {
     let mut app: App = App::new()
         .title("Hello World");
 
+    // Initialize Ratatui and run the application
     let mut terminal = ratatui::init();
     let appResult = app.run(&mut terminal);
+
+    // Restore terminal state and terminate program
     ratatui::restore();
     return appResult;
 }

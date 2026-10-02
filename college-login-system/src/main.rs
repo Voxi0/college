@@ -1,6 +1,6 @@
 #[path = "../../utils.rs"]
 mod utils;
-use utils::prompt_input;
+use utils::prompt_str;
 
 use color_eyre::eyre::{self, WrapErr};
 use serde::Deserialize;
@@ -33,8 +33,8 @@ fn main() -> eyre::Result<()>{
         // Get student username and password
         let mut username: String = String::new();
         let mut password: String = String::new();
-        prompt_input("Enter Your Username: ", &mut username);
-        prompt_input("Enter Your Password: ", &mut password);
+        prompt_str("Enter Your Username: ", &mut username);
+        prompt_str("Enter Your Password: ", &mut password);
 
         // Read the college's student database to check username and password
         let mut user_found: bool = false;
@@ -52,9 +52,9 @@ fn main() -> eyre::Result<()>{
 
         // User not found or incorrect password
         if !user_found {
-            println!("Invalid Username");
+            println!("Invalid Username, {num_tries} Out of 3 Tries Remaining");
         } else if !verified {
-            println!("Invalid Password");
+            println!("Invalid Password, {num_tries} Out of 3 Tries Remaining");
         }
 
         // Read the database from the beginning again
@@ -66,9 +66,9 @@ fn main() -> eyre::Result<()>{
 
     // Check if user is verified finally
     if !verified {
-        println!("\nLogin Failed. Account Has Been Locked");
+        println!("Login Failed. Account Has Been Locked");
     } else {
-        println!("\nLogin Successful");
+        println!("Login Successful");
     }
 
     // End of program

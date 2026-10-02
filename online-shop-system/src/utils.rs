@@ -13,6 +13,7 @@ pub fn getCenterArea(frame: &Frame, rect: &Rect) -> Rect {
     return area;
 }
 
+// Accepts strings such as "<Item>-<Price>" and splits them by using the `-` as the separator
 pub fn splitItemAndPrice(itemAndPrice: &str) -> (&str, f32) {
     if let Some((itemPart, pricePart)) = itemAndPrice.rsplit_once('-') {
         if let Ok(price) = pricePart.trim().trim_start_matches('£').trim().parse::<f32>() {
