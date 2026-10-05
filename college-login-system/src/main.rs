@@ -31,10 +31,8 @@ fn main() -> eyre::Result<()>{
         num_tries += 1;
 
         // Get student username and password
-        let mut username: String = String::new();
-        let mut password: String = String::new();
-        prompt_str("Enter Your Username: ", &mut username);
-        prompt_str("Enter Your Password: ", &mut password);
+        let username: String = prompt_str("Enter Your Username: ");
+        let password: String = prompt_str("Enter Your Password: ");
 
         // Read the college's student database to check username and password
         let mut user_found: bool = false;

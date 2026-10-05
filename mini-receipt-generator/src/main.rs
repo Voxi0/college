@@ -15,8 +15,7 @@ fn main() {
         // Ask user for item name
         // We upper-case the first letter of the name (Unstable Rust feature)
         // Stop input if no name entered
-        let mut item_name: String = String::new();
-        prompt_str("Enter Item Name (Or Leave Blank to Stop): ", &mut item_name);
+        let mut item_name: String = prompt_str("Enter Item Name (Or Leave Blank to Stop): ");
         if item_name.is_empty() {break}
         item_name = item_name.word_to_titlecase();
 

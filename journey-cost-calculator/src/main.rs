@@ -1,6 +1,6 @@
 #[path = "../../utils.rs"]
 mod utils;
-use utils::{prompt_num};
+use utils::prompt_num;
 
 // Calculate total journey cost
 fn main() {

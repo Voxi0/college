@@ -19,15 +19,15 @@ impl User {
         let mut user: Self = Self::default();
 
         // Ask for user's name
-        prompt_str("Enter Your Name: ", &mut user.name);
+        user.name = prompt_str("Enter Your Name: ");
 
         // User age - We have to parse the string to a u8
         user.age = prompt_num("Enter Your Age: ");
 
         // Ask user for their other details
-        prompt_str("Enter Your Hometown: ", &mut user.hometown);
-        prompt_str("Enter Your Favourite Tech: ", &mut user.fav_tech);
-        prompt_str("What's Your Intended Career? ", &mut user.intended_career);
+        user.hometown = prompt_str("Enter Your Hometown: ");
+        user.fav_tech = prompt_str("Enter Your Favourite Tech: ");
+        user.intended_career = prompt_str("What's Your Intended Career? ");
 
         return Ok(user);
     }

@@ -19,8 +19,7 @@ mod utils;
 use utils::{prompt_str, prompt_num};
 
 fn main() {
-    let mut customer_name: String = String::new();
-    prompt_str("Enter Name: ", &mut customer_name);
+    let customer_name: String = prompt_str("Enter Name: ");
 
     // We made this a float so we can enter the precise price but the question didn't specify which
     // type to use or whatever
@@ -31,6 +30,6 @@ fn main() {
     let total_cost: f32 = ticket_price * ticket_quantity as f32;
 
     // Final output
-    println!("{customer_namel}'S RECEIPT");
+    println!("{customer_name}'S RECEIPT");
     println!("Total Cost: {ticket_price} * {ticket_quantity} = {total_cost}");
 }

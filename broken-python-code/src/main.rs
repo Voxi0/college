@@ -20,8 +20,7 @@ use utils::{prompt_str, prompt_num};
 
 fn main() {
     // Input
-    let mut student_name: String = String::new();
-    prompt_str("Enter name: ", &mut student_name);
+    let student_name: String = prompt_str("Enter name: ");
     let age: u8 = prompt_num("Enter age: ");
     let next_age: u8 = age + 1;
     let score: f32 = prompt_num("Enter score: ");

@@ -8,8 +8,7 @@ const NUM_SCORES: usize = 3;
 
 fn main() {
     // Input student name
-    let mut student_name: String = String::new();
-    prompt_str("Enter Your Name: ", &mut student_name);
+    let student_name: String = prompt_str("Enter Your Name: ");
 
     // Input student's exam scores
     let mut exam_scores: [u8; NUM_SCORES] = [0; NUM_SCORES];

@@ -11,24 +11,27 @@ pub fn prompt<T: std::fmt::Display>(msg: T) {
 }
 
 // Handle inputting a string
-pub fn prompt_str<T: std::fmt::Display>(msg: T, input_buf: &mut String) {
+pub fn prompt_str<T: std::fmt::Display>(msg: T) -> String {
     prompt(msg);
 
     // Read a line of input until user enters newline
+    let mut input_buf: String = String::new();
     io::stdin()
-        .read_line(input_buf)
+        .read_line(&mut input_buf)
         .expect("[FATAL] Read-line failed");
 
     // Get rid of trailing whitespaces and the final newline
     // Yes, Rust puts the final newline entered by the user into the buffer
-    *input_buf = input_buf.trim().to_string();
+    input_buf = input_buf.trim().to_string();
+
+    // Return the input
+    return input_buf;
 }
 
 // Handle inputting a number of any kind
 pub fn prompt_num<T: std::str::FromStr>(msg: &str) -> T {
     loop {
-        let mut num_str: String = String::new();
-        prompt_str(msg, &mut num_str);
+        let num_str: String = prompt_str(msg);
         match num_str.trim().parse::<T>() {
             Ok(num) => break num,
             Err(_) => {
