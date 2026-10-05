@@ -4,6 +4,8 @@ use iced::widget::{button, column, text, Column};
 struct Counter {
     value: i32,
 }
+
+#[derive(Clone)]
 enum Message {
     Increment,
     Decrement,
@@ -16,17 +18,31 @@ impl Counter {
             Message::Decrement => self.value = self.value.saturating_sub(1),
         }
     }
+
+    fn view(&self) -> Column<Message> {
+        column![
+            button("+").on_press(Message::Increment),
+            text(self.value),
+            button("-").on_press(Message::Decrement),
+        ]
+    }
 }
 
 #[test]
-fn testCounter() {
+fn test_counter() {
     let mut counter: Counter = Counter::default();
+
     counter.update(Message::Increment);
     assert_eq!(counter.value, 1);
+
     counter.update(Message::Decrement);
     assert_eq!(counter.value, 0);
+
+    counter.update(Message::Decrement);
+    assert_eq!(counter.value, -1);
 }
 
-fn main() {
-    println!("Hello, world!");
+fn main() -> iced::Result {
+    let counter: Counter = Counter::default();
+    iced::run(Counter::update, Counter::view)
 }
