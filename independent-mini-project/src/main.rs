@@ -1,4 +1,5 @@
 mod app;
+mod menu;
 use iced::window;
 use app::App;
 

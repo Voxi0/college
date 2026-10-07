@@ -1,36 +1,32 @@
+use crate::menu::{self, Menu};
 use iced::{
     window,
     Task,
-    Alignment::Center, Length,
-    Font, font::Weight,
-    widget::{container, column, row, button, text},
+    widget::{container, row, column, text, button},
 };
 
 #[derive(Default)]
 pub struct App {
-    label: String,
+    menu: Menu,
 }
 
 #[derive(Debug, Clone)]
 pub enum Message {
-    Touched,
-    Hit,
     Exit,
+    MenuMessage(menu::Message),
 }
 
 impl App {
     pub fn new() -> Self {
         Self {
-            label: "Hey there!".to_string(),
+            menu: Menu::new(),
             ..Default::default()
         }
     }
 
-    // Handle updates
     pub fn update(&mut self, message: Message) -> Task<Message> {
         match message {
-            Message::Touched => self.label = "ay?".to_string(),
-            Message::Hit => self.label = "you madafaka.".to_string(),
+            Message::MenuMessage(msg) => self.menu.update(msg),
             Message::Exit => return window::latest().and_then(window::close),
         }
 
@@ -39,25 +35,16 @@ impl App {
         return Task::none();
     }
 
-    // Render the application
     pub fn view(&self) -> iced::Element<'_, Message> {
         container(
             column![
-                text(&self.label).size(40).center(),
+                text("hello"),
                 row![
-                    button(text("touch me").center()).on_press(Message::Touched),
-                    button(text("hit me").center()).on_press(Message::Hit),
-                    button(text("exit").center().font(Font {weight: Weight::Bold, ..Default::default()})).on_press(Message::Exit),
-                ]
-                .spacing(24),
+                    button("Exit").on_press(Message::Exit),
+                    self.menu.view().map(Message::MenuMessage),
+                ].spacing(10)
             ]
-            .align_x(Center)
-            .spacing(20)
         )
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .align_x(Center)
-            .align_y(Center)
-            .into()
+        .into()
     }
 }
