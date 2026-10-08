@@ -1,4 +1,7 @@
 mod app;
+mod player;
+mod components;
+
 use app::AppPlugin;
 use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
