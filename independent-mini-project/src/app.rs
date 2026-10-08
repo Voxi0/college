@@ -1,50 +1,46 @@
-use crate::menu::{self, Menu};
-use iced::{
-    window,
-    Task,
-    widget::{container, row, column, text, button},
-};
+use bevy::prelude::*;
+use bevy_ecs_tiled::prelude::*;
 
-#[derive(Default)]
-pub struct App {
-    menu: Menu,
+#[derive(Resource)]
+struct GreetTimer(Timer);
+
+#[derive(Component)]
+struct Person;
+
+#[derive(Component)]
+struct Name(String);
+
+pub struct AppPlugin;
+impl Plugin for AppPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .add_plugins(TiledPlugin::default())
+            .insert_resource(GreetTimer(Timer::from_seconds(1.0, TimerMode::Repeating)))
+            .add_systems(Startup, app_startup)
+            .add_systems(Update, (app_update, greet_timer).chain());
+    }
 }
 
-#[derive(Debug, Clone)]
-pub enum Message {
-    Exit,
-    MenuMessage(menu::Message),
+fn app_startup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(Camera2d);
+
+    commands.spawn((
+        Person, Name("Bob Tyson".to_string()),
+    ));
+    commands.spawn((
+        Person, Name("Mike Tyson".to_string())
+    ));
+
+    // Load and display map
+    let map_handle: Handle<TiledMapAsset> = asset_server.load("map.tmx");
+    commands.spawn(TiledMap(map_handle));
 }
+fn app_update(mut _commands: Commands, _asset_server: Res<AssetServer>) {}
 
-impl App {
-    pub fn new() -> Self {
-        Self {
-            menu: Menu::new(),
-            ..Default::default()
+fn greet_timer(time: Res<Time>, mut timer: ResMut<GreetTimer>, query: Query<&Name, With<Person>>) {
+    if timer.0.tick(time.delta()).just_finished() {
+        for name in &query {
+            println!("Hey {}", name.0);
         }
-    }
-
-    pub fn update(&mut self, message: Message) -> Task<Message> {
-        match message {
-            Message::MenuMessage(msg) => self.menu.update(msg),
-            Message::Exit => return window::latest().and_then(window::close),
-        }
-
-        // For messages that only perform state mutations with no side effects
-        // Else we do early returns
-        return Task::none();
-    }
-
-    pub fn view(&self) -> iced::Element<'_, Message> {
-        container(
-            column![
-                text("hello"),
-                row![
-                    button("Exit").on_press(Message::Exit),
-                    self.menu.view().map(Message::MenuMessage),
-                ].spacing(10)
-            ]
-        )
-        .into()
     }
 }
