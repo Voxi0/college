@@ -1,5 +1,8 @@
 use bevy::prelude::*;
+use bevy::input::common_conditions::*;
 use bevy_ecs_tiled::prelude::*;
+
+use crate::components::AppState;
 
 pub struct AppPlugin;
 impl Plugin for AppPlugin {
@@ -8,17 +11,27 @@ impl Plugin for AppPlugin {
             .add_plugins(TiledPlugin::default())
             .add_plugins(crate::player::PlayerPlugin)
             .add_systems(Startup, app_startup)
-            .add_systems(Update, app_update);
+            .add_systems(Update, start_game.run_if(input_just_pressed(KeyCode::Enter)));
     }
 }
 
 fn app_startup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(Camera2d);
+
     // Load and display map
-    let map_handle: Handle<TiledMapAsset> = asset_server.load("map.tmx");
     commands.spawn((
-        TiledMap(map_handle),
+        TiledMap(asset_server.load("map.tmx")),
         TilemapAnchor::Center,
     ));
 }
 
-fn app_update(mut _commands: Commands, _asset_server: Res<AssetServer>) {}
+// Remove all cameras and then change the app state
+// The only camera to be used will be the one attached to the player
+fn start_game(
+    mut commands: Commands,
+    mut next_state: ResMut<NextState<AppState>>,
+    query: Query<Entity, With<Camera>>,
+) {
+    for camera in &query {commands.entity(camera).despawn()}
+    next_state.set(AppState::InGame);
+}

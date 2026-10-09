@@ -1,4 +1,14 @@
-use bevy::prelude::Component;
+use bevy::{ecs::template::FromTemplate, prelude::Component, state::state::States};
 
-#[derive(Component, Default, Clone)]
+// Application state
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Default, States)]
+pub enum AppState {
+  #[default]
+  MainMenu,
+  InGame,
+  Paused,
+}
+
+// Movement speed
+#[derive(Component, FromTemplate)]
 pub struct MoveSpeed(pub u8);
