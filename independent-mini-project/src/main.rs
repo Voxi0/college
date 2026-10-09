@@ -1,6 +1,7 @@
 mod app;
-mod player;
 mod components;
+mod main_menu;
+mod player;
 
 use app::AppPlugin;
 use bevy::prelude::*;

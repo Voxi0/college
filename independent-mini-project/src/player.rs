@@ -4,9 +4,8 @@ use bevy::prelude::*;
 // Marker for our player
 #[derive(Component, FromTemplate)]
 #[require(
+    Camera2d,
     MoveSpeed(200),
-    Transform,
-    Visibility
 )]
 struct Player;
 
@@ -24,8 +23,7 @@ impl Plugin for PlayerPlugin {
 fn player() -> impl Scene {
     bsn! {
         Player
-        Camera2d
-        Mesh2d(asset_value(Circle::new(40.0)))
+        Mesh2d(asset_value(Circle::new(20.0)))
         MeshMaterial2d<ColorMaterial>(asset_value(Color::srgb(1.0, 0.0, 0.0)))
     }
 }
@@ -43,10 +41,12 @@ fn player_movement(
     let mut dir: Vec2 = Vec2::ZERO;
     for key in input.get_pressed() {
         dir += match key {
-            KeyCode::ArrowRight | KeyCode::KeyD => Vec2::X,
-            KeyCode::ArrowLeft | KeyCode::KeyA => Vec2::NEG_X,
+            // Up, down, left and right
             KeyCode::ArrowUp | KeyCode::KeyW => Vec2::Y,
             KeyCode::ArrowDown | KeyCode::KeyS => Vec2::NEG_Y,
+            KeyCode::ArrowLeft | KeyCode::KeyA => Vec2::NEG_X,
+            KeyCode::ArrowRight | KeyCode::KeyD => Vec2::X,
+
             _ => Vec2::ZERO,
         };
     }

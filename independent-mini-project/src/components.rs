@@ -7,6 +7,7 @@ pub enum AppState {
   MainMenu,
   InGame,
   Paused,
+  Exit,
 }
 
 // Movement speed
