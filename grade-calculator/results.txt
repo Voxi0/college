@@ -1,0 +1,24 @@
+Student Name (0): dick
+Student Score (0): 100
+Student Grade (0): Distinction
+
+Student Name (1): sex
+Student Score (1): 92
+Student Grade (1): Distinction
+
+Student Name (2): fuck
+Student Score (2): 50
+Student Grade (2): Pass
+
+Student Name (3): was
+Student Score (3): 42
+Student Grade (3): Pass
+
+Student Name (4): sick
+Student Score (4): 10
+Student Grade (4): Fail
+
+Student Name (5): max
+Student Score (5): 9
+Student Grade (5): Fail
+
